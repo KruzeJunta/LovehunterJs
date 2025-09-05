@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LovehunterJs</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#fff; color:#000; padding:20px; }
+    h1 { font-size:20px; margin-bottom:20px; }
+    .practical { margin-bottom:30px; }
+    h2 { font-size:16px; margin:0 0 8px; }
+    textarea { width:100%; min-height:200px; font-family: monospace; font-size:13px; padding:8px; }
+    button { margin-top:6px; padding:4px 10px; font-size:12px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>Practicals - Click to Copy</h1>
+
+  <div class="practical">
+    <h2>Form validation</h2>
+    <textarea id="code1">Index.html
+	 <!DOCTYPE html>
+ <html ng-app="dynamicFormApp">
+ <head>
+ <meta charset="UTF-8">
+ <title>Dynamic Form with Validation</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ <script src="app.js"></script>
+ <style>
+ body { font-family: Arial, sans-serif; margin: 30px; }
+ h2 { margin-bottom: 20px; }
+ .form-field { margin-bottom: 18px; }
+ label { font-weight: bold; }
+ input, select { padding: 6px; margin-top: 4px; width: 250px; }
+ .error { color: red; font-size: 13px; margin-top: 3px; }
+ button { padding: 8px 16px; border: none; border-radius: 4px; background: #4CAF50; color: white;
+ cursor: pointer; }
+ button:hover { background: #45a049; }
+ </style>
+ </head>
+ <body ng-controller="FormController">
+ <h2>Dynamic Form</h2>
+ <form name="dynamicForm" ng-submit="submitForm()" novalidate>
+ <div ng-repeat="field in formConfig" class="form-field">
+ <!-- Text Input-->
+ <div ng-if="field.type === 'text'">
+ <label>{{field.label}}</label><br>
+ <input type="text"
+ name="{{field.model}}"
+ ng-model="formData[field.model]"
+ ng-required="field.validation.required"
+ ng-pattern="field.validation.pattern"
+ ng-if="!field.validation.email">
+ <!-- Email Input-->
+ <input type="email"
+ name="{{field.model}}"
+ ng-model="formData[field.model]"
+ ng-required="field.validation.required"
+ ng-if="field.validation.email">
+ <!-- Error Messages-->
+ <div class="error" ng-show="dynamicForm[field.model].$touched &&
+ dynamicForm[field.model].$invalid">
+ <div ng-if="dynamicForm[field.model].$error.required">{{field.errorMessages.required}}</div>
+ <div ng-if="dynamicForm[field.model].$error.pattern">{{field.errorMessages.pattern}}</div>
+ <div ng-if="dynamicForm[field.model].$error.email">{{field.errorMessages.email}}</div>
+ </div>
+ </div>
+ <!-- Select Box-->
+ <div ng-if="field.type === 'select'">
+ <label>{{field.label}}</label><br>
+<select name="{{field.model}}" ng-model="formData[field.model]" ng
+required="field.validation.required">
+ <option value="">--Select--</option>
+ <option ng-repeat="opt in field.options" value="{{opt}}">{{opt}}</option>
+ </select>
+ <div class="error" ng-show="dynamicForm[field.model].$touched &&
+ dynamicForm[field.model].$invalid">
+ {{field.errorMessages.required}}
+ </div>
+ </div>
+ <!-- Checkbox-->
+ <div ng-if="field.type === 'checkbox'">
+ <label>
+ <input type="checkbox"
+ ng-model="formData[field.model]"
+ ng-true-value="true"
+ ng-false-value="false">
+ {{field.label}}
+ </label>
+ <div class="error" ng-show="isRequiredCheckboxInvalid(field)">
+ {{field.errorMessages.required}}
+ </div>
+ </div>
+ </div>
+ <button type="submit">Submit</button>
+ </form>
+ </body>
+ </html>
+ app.js
+ var app = angular.module("dynamicFormApp", []);
+ app.controller("FormController", function ($scope) {
+ // JSON configuration
+ $scope.formConfig = [
+ {
+ label: "Full Name",
+ type: "text",
+ model: "fullName",
+ validation: { required: true, pattern: /^[a-zA-Z ]+$/ },
+ errorMessages: {
+ required: "Full Name is required",
+ pattern: "Only alphabets and spaces allowed"
+ }
+ },
+ {
+ label: "Email",
+ type: "text",
+ model: "email",
+ validation: { required: true, email: true },
+errorMessages: {
+ required: "Email is required",
+ email: "Enter a valid email"
+ }
+ },
+ {
+ label: "Gender",
+ type: "select",
+ model: "gender",
+ options: ["Male", "Female", "Other"],
+ validation: { required: true },
+ errorMessages: {
+ required: "Please select your gender"
+ }
+ },
+ {
+ label: "Accept Terms",
+ type: "checkbox",
+ model: "acceptTerms",
+ validation: { required: true },
+ errorMessages: {
+ required: "You must accept terms & conditions"
+ }
+ }
+ ];
+ // Store form data
+ $scope.formData = {};
+ // Custom validation for checkbox
+ $scope.isRequiredCheckboxInvalid = function (field) {
+ return (
+ field.type === "checkbox" &&
+ field.validation.required &&
+ !$scope.formData[field.model]
+ );
+ };
+ // Submit handler
+ $scope.submitForm = function () {
+ if ($scope.dynamicForm.$valid) {
+ alert("Form submitted successfully!\n\n" + JSON.stringify($scope.formData, null, 2));
+ } else {
+ alert("Please correct the errors before submitting.");
+ }
+ };
+ });
+</textarea><br>
+    <button data-target="code1">Copy</button>
+  </div>
+
+  <div class="practical">
+    <h2>Api Integration</h2>
+    <textarea id="code2">Practical2
+ Index2.html
+ <!DOCTYPE html>
+ <html ng-app="apiApp">
+ <head>
+ <meta charset="UTF-8">
+ <title>REST API Integration- AngularJS</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ <script src="app.js"></script>
+ <style>
+ table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-top: 20px;
+ }
+ th, td {
+ padding: 8px;
+ border: 1px solid #ddd;
+ }
+ th {
+ cursor: pointer;
+ background-color: #f2f2f2;
+ }
+ input {
+ margin-bottom: 10px;
+ padding: 5px;
+ width: 200px;
+ }
+ </style>
+ </head>
+ <body ng-controller="ApiController">
+ <h2>User List</h2>
+ <!-- Search Filter-->
+ <input type="text" ng-model="searchText" placeholder="Search by name or email...">
+ <!-- Data Table-->
+ <table>
+ <thead>
+ <tr>
+ <th ng-click="sortBy('name')">Name</th>
+ <th ng-click="sortBy('email')">Email</th>
+ <th ng-click="sortBy('phone')">Phone</th>
+ <th ng-click="sortBy('company.name')">Company</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr ng-repeat="user in users | filter:searchText | orderBy:sortField:reverseSort">
+ <td>{{user.name}}</td>
+ <td>{{user.email}}</td>
+ <td>{{user.phone}}</td>
+ <td>{{user.company.name}}</td>
+ </tr>
+ </tbody>
+ </table>
+</body>
+ </html>
+ app2.js
+ angular.module('apiApp', [])
+ .controller('ApiController', ['$scope', '$http', function($scope, $http) {
+ $scope.users = [];
+ $scope.searchText = '';
+ $scope.sortField = 'name';
+ $scope.reverseSort = false;
+ // default sort
+ // Fetch data from JSONPlaceholder API
+ $http.get('https://jsonplaceholder.typicode.com/users')
+ .then(function(response) {
+ $scope.users = response.data;
+ }, function(error) {
+ console.error('Error fetching data:', error);
+ });
+ // Sorting function
+ $scope.sortBy = function(field) {
+ if ($scope.sortField === field) {
+ $scope.reverseSort = !$scope.reverseSort;
+ } else {
+ $scope.sortField = field;
+ $scope.reverseSort = false;
+ }
+ };
+ }]);</textarea><br>
+    <button data-target="code2">Copy</button>
+  </div>
+
+  <div class="practical">
+    <h2>Star Rating</h2>
+    <textarea id="code3">Practical 3
+ Index3.html
+ <!DOCTYPE html>
+ <html ng-app="ratingApp">
+ <head>
+ <meta charset="UTF-8">
+ <title>Custom Directive- Star Rating</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ <script src="app3.js"></script>
+ <style>
+ .star-rating {
+ display: inline-block;
+ }
+ .star {
+ font-size: 30px;
+ color: #ccc;
+ cursor: pointer;
+ transition: color 0.2s;
+ }
+ .star.filled {
+ color: gold;
+ }
+ </style>
+ </head>
+ <body ng-controller="MainController">
+ <h1>AngularJS Custom Directive Example</h1>
+ <h3>Rate this product:</h3>
+ <!-- Using custom directive-->
+ <star-rating rating="productRating"></star-rating>
+ <p>Your rating: {{productRating}} / 5</p>
+ </body>
+ </html>
+ app4.js
+ var app = angular.module("ratingApp", []);
+ // Main controller
+ app.controller("MainController", function($scope) {
+ $scope.productRating = 3; // Default rating
+ });
+ // Custom Directive
+ app.directive("starRating", function() {
+ return {
+ restrict: "E", // Used as <star-rating>
+ template: `
+ <div class="star-rating">
+ <span ng-repeat="star in stars track by $index"
+ ng-class="{filled: star.filled}"
+ class="star"
+ng-click="toggle($index)">
+ ★
+ </span>
+ </div>
+ `,
+ scope: {
+ rating: "=" // Two-way binding with parent scope
+ },
+ link: function(scope) {
+ // Build star array
+ function updateStars() {
+ scope.stars = [];
+ for (let i = 0; i < 5; i++) {
+ scope.stars.push({ filled: i < scope.rating });
+ }
+ }
+ // Handle click event
+ scope.toggle = function(index) {
+ scope.rating = index + 1; // update rating model
+ };
+ // Watch for changes
+ scope.$watch("rating", function() {
+ updateStars();
+ });
+ // Initialize
+ updateStars();
+ }
+ };
+ });</textarea><br>
+    <button data-target="code3">Copy</button>
+  </div>
+
+  <div class="practical">
+    <h2>Routings</h2>
+    <textarea id="code4">Practical 4
+ Index4.html
+ <!DOCTYPE html>
+ <html ng-app="myApp">
+ <head>
+ <meta charset="UTF-8">
+ <title>AngularJS Routing Example</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+ <script src="app4.js"></script>
+ <style>
+ body { font-family: Arial, sans-serif; margin: 20px; }
+ nav a {
+ margin-right: 15px;
+ text-decoration: none;
+ padding: 5px 10px;
+ border-radius: 5px;
+ background: #007BFF;
+ color: white;
+ }
+ nav a.active {
+ background: #0056b3;
+ }
+ </style>
+ </head>
+ <body>
+ <h1>AngularJS SPA with Routing</h1>
+ <!-- Navigation-->
+ <nav>
+ <a href="#!/home" ng-class="{'active': isActive('/')}">Home</a>
+ <a href="#!/about" ng-class="{'active': isActive('/about')}">About</a>
+ <a href="#!/contact" ng-class="{'active': isActive('/contact')}">Contact</a>
+ </nav>
+ <!-- View will be injected here-->
+ <div ng-view></div>
+ </body>
+ </html>
+ Home.html
+ <h2>Home</h2>
+ <p>{{message}}</p>
+ about.html
+ <h2>About</h2>
+ <p>{{message}}</p>
+ Contact.html
+ <h2>Contact</h2>
+ <p>{{message}}</p>
+ app4.js
+ var app = angular.module("myApp", ["ngRoute"]);
+ app.config(function($routeProvider) {
+ $routeProvider
+ .when("/", {
+templateUrl: "home.html",
+ controller: "HomeController"
+ })
+ .when("/about", {
+ templateUrl: "about.html",
+ controller: "AboutController"
+ })
+ .when("/contact", {
+ templateUrl: "contact.html",
+ controller: "ContactController"
+ })
+ .otherwise({
+ redirectTo: "/"
+ });
+ });
+ app.controller("HomeController", function($scope) {
+ $scope.message = "Welcome to the Home Page!";
+ });
+ app.controller("AboutController", function($scope) {
+ $scope.message = "Learn more about us on the about page.";
+ });
+ app.controller("ContactController", function($scope) {
+ $scope.message = "Contact us at contact@example.com";
+ });
+ // To highlight active links
+ app.run(function($rootScope, $location) {
+ $rootScope.isActive = function(viewLocation) {
+ return viewLocation === $location.path();
+ };
+ });</textarea><br>
+    <button data-target="code4">Copy</button>
+  </div>
+
+  <div class="practical">
+    <h2>Shared service</h2>
+    <textarea id="code5">Practical 5
+ Index5.html
+ <!DOCTYPE html>
+ <html ng-app="sharedApp">
+ <head>
+ <meta charset="utf-8">
+ <title>Data Sharing with Service</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ </head>
+ <body>
+ <div ng-controller="FirstController">
+ <h2>First Controller</h2>
+ <p>Message: {{ message }}</p>
+ <input type="text" ng-model="newMessage">
+ <button ng-click="updateMessage()">Update Message</button>
+ </div>
+ <hr>
+ <div ng-controller="SecondController">
+ <h2>Second Controller</h2>
+ <p>Message from Service: {{ message }}</p>
+ <button ng-click="clearMessage()">Clear Message</button>
+ </div>
+ <script src="app5.js"></script>
+ </body>
+ </html>
+ App5.js
+ var app = angular.module("sharedApp", []);
+ // Service to manage shared data and business logic
+ app.service("DataService", function () {
+ var sharedMessage = "Hello from the Service!";
+ return {
+ getMessage: function () {
+ return sharedMessage;
+ },
+ setMessage: function (msg) {
+ sharedMessage = msg;
+ },
+ clearMessage: function () {
+ sharedMessage = "";
+ }
+ };
+ });
+ // First Controller
+ app.controller("FirstController", function ($scope, DataService) {
+ $scope.message = DataService.getMessage();
+ $scope.updateMessage = function () {
+ DataService.setMessage($scope.newMessage);
+$scope.message = DataService.getMessage();
+ };
+ });
+ // Second Controller
+ app.controller("SecondController", function ($scope, DataService) {
+ $scope.message = DataService.getMessage();
+ $scope.clearMessage = function () {
+ DataService.clearMessage();
+ $scope.message = DataService.getMessage();
+ };
+ });</textarea><br>
+    <button data-target="code5">Copy</button>
+  </div>
+
+  <div class="practical">
+    
+<script>
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-target]');
+  if (!btn) return;
+  const id = btn.getAttribute('data-target');
+  const el = document.getElementById(id);
+  if (!el) return;
+  const text = el.value;
+  try { await navigator.clipboard.writeText(text); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',800); }
+  catch(err) { el.select(); document.execCommand('copy'); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',800); }
+});
+</script>
+</body>
+</html>
